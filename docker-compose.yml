@@ -1,0 +1,11 @@
+version: "2"
+
+services:
+  node:
+    image: node:9.6.1
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+  mongo:
+    image: mongo:3.7

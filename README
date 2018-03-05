@@ -1,0 +1,6 @@
+docker network create -d bridge mybridge
+docker run --rm --network=mybridge -p=8080:8080 --name=node node
+docker run --rm --network=mybridge -it -p=27017:27017 --name=mongo mongo
+
+
+app/node_modules/nodemon/bin/nodemon.js app/app/router.js 
