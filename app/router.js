@@ -3,40 +3,53 @@ var express = require('express');
 var app = express();
 
 https = require('https');
+http = require('http');
+var path = require('path');
+
+// Variables riot games
 
 urlRegion = "euw1.api.riotgames.com"
 
-apiKey = "RGAPI-7d881965-7ad2-42b0-9f99-48c4f7f841f3"
+apiKey = "RGAPI-8e36b71e-e5e1-4d56-ae7a-00f0ac0e5300"
+
+urlDdragon = "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/"
+urlProfileIcons = urlDdragon+"profileicon/"
+urlChampions = urlDdragon+"champion/"
+
 
 MongoClient = require('mongodb').MongoClient;
 urlMongo = 'mongodb://172.18.0.3:27017';
 dbNameMongo = 'test';
 
+fs = require('fs')
+mustache = require('mustache')
+
 api = require('./api.js');
 mongo = require('./mongo.js')
-const controller = require('./controller.js');
+controller = require('./controller.js');
+templateMustache = require('./template.js');
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/summoner/update/:name', function(req, res) {
   controller.getUserByNameApi(req.params.name, function(retourJson){
     res.send(retourJson);
-
-    userObject = controller.formatUserObject(retourJson);
-
-    controller.saveUser(userObject, function(err, result){
-
-    });
   })
 });
 
 app.get('/summoner/get/:name', function(req, res) {
-  controller.getUserByNameMongo(req.params.name, function(retourJson){
-      res.send(retourJson);
+  controller.getUserByName(req.params.name, function(retourJsonUser){
+    controller.getActiveGame(retourJsonUser, function(retourJson){
+      templateMustache.renderTemplate(retourJson, "summoner.html", function(contenuTemplate){
+        res.send(contenuTemplate);
+      });
+    })
   })
 });
 
 app.get('/getRecentMatches/:id', function(req, res){
   controller.getRecentMatchesApi(req.params.id, function(retourJson){
-      res.send(retourJson);
+    res.send(retourJson);
   })
 })
 
@@ -55,5 +68,19 @@ app.get('/getAllSummoners', function(req, res) {
       res.send(retourJson);
   })
 });
+
+app.get('/test', function(req, res){
+  controller.saveProfilesIcons(function(retourJsonIcons){
+    controller.saveChampions(function(retourJsonChampions){
+        res.send(retourJsonChampions);
+    })
+  })
+})
+
+app.get('/featured-games', function(req, res){
+  api.getFeaturedGames(function(retourJson){
+    res.send(retourJson);
+  })
+})
 
 app.listen(8080);

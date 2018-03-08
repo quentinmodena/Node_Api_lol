@@ -1,0 +1,31 @@
+<div>Summoner name : {{name}}</div>
+<div>Image : <img src="/imagesApi/icons/{{icon.image}}"/></div>
+
+<div>
+  Leagues :
+  <ul>
+    {{# leagues}}
+    <li>
+      {{queueType}} : {{tier}} {{rank}} - {{leaguePoints}} LP {{# miniSeries}} - BO : {{miniSeries.wins}} W / {{miniSeries.losses}} L{{/ miniSeries}}
+    </li>
+    {{/ leagues}}
+  </ul>
+</div>
+
+{{#currentGame}}
+<div>
+  Current game : {{gameType}}
+</div>
+{{/currentGame}}
+
+<div>
+  Recent matches :
+  <ul>
+    {{# recentMatches.matches}}
+    <li>
+      Lane : {{lane}}
+      Champion : <img src="/imagesApi/champions/{{champion.image}}"/>{{champion.name}}
+    </li>
+    {{/ recentMatches.matches}}
+  </ul>
+</div>

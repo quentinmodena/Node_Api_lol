@@ -9,3 +9,7 @@ services:
       - "8080:8080"
   mongo:
     image: mongo:3.7
+  nginx:
+    image: nginx:1.13.9
+    volumes:
+      - ../front-node-lol:/usr/share/nginx/html
